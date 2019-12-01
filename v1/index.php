@@ -314,6 +314,42 @@ $app->get('/findWinner', function (Request $req,  Response $res, $args = [])  {
         echoResponse(200, $response);
     }
 });
+
+//helper api here start
+//game_id + room_id + user_id
+//find winner room details
+$app->get('/roomList', function (Request $req,  Response $res, $args = [])  {
+ 
+    //Creating a response array
+    $response = array();
+    
+    
+    //Creating a DbOperation object
+    $db = new DbOperation();
+    //Calling the method createStudent to add student to the database
+    $res = $db->getRoomList();
+    //If the result returned is 0 means success
+    //if ($res == 0) {
+        //Making the response error false
+        $response["error"] = false;
+        //Adding a success message
+        $response["message"] = "Room List";
+        $response["data"] =  $res;
+        //Displaying response
+        echoResponse(201, $response);
+        //If the result returned is 1 means failure
+    /*} else if ($res == 1) {
+        $response["error"] = true;
+        $response["message"] = "Some Thing Wrong Happened";
+        echoResponse(200, $response);
+        //If the result returned is 2 means user already exist
+    } else if ($res == 2) {
+        $response["error"] = true;
+        $response["message"] = "Sorry,  some error";
+        echoResponse(200, $response);
+    }*/
+});
+//helper api end here
 //Method to display response
 function echoResponse($status_code, $response)
 {

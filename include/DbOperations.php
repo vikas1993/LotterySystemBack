@@ -245,6 +245,21 @@ class DbOperation
         
         
     }
+
+    function getRoomList(){
+        $stmt = $this->con->prepare("SELECT * FROM LOTTY_ROOMS where room_active = 1");
+        //$stmt->bind_param("ss",$username,$username);
+        $stmt->execute();
+        
+        //Getting the student result array
+        $stmt->store_result();
+        
+        $rooms = $this->get_result($stmt);
+        //print_r($rooms);
+        $stmt->close();
+        //returning the student
+        return $rooms;
+    }
     
     function get_result( $Statement ) {
         $RESULT = array();
