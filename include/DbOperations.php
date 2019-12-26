@@ -19,7 +19,7 @@ class DbOperation
         $this->con = $db->connect();
     }
 
-    //Method for user  login
+    //Method for user  login data
     public function userLogin($userId ,$pass){
         
 
@@ -27,7 +27,7 @@ class DbOperation
         $password = md5($pass);
         //print_r($password."\n");
         //Creating query
-        $stmt = $this->con->prepare("SELECT name from LOTTY_USERS WHERE phone = ? or email = ? and password = ? and type =2");
+        $stmt = $this->con->prepare("SELECT name from LOTTY_USERS WHERE (phone = ? or email = ?) and password = ? and type =2");
         //binding the parameters
         //print_r($stmt);
         $stmt->bind_param("sss", $userId,$userId,$password);
