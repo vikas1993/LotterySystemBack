@@ -18,7 +18,61 @@ class DbOperation
         //by calling the method connect of DbConnect class
         $this->con = $db->connect();
     }
+    //initiating the transaction 
+    public function initiateTransaction($user_id,$online_trans_id,$room_id,$game_id,$trans_amt){
+        $order_id = $user_id."_".$online_trans_id."_".$room_id."_".$game_id."_".$trans_amt;
+        $status = "CREATED";
+        //Crating an statement
+        $stmt = $this->con->prepare("insert into  LOTTY_TICKETS_TRANSACTION (user_id ,online_trans_id,room_id,game_id,trans_amt,order_id,status )values(?,?,?,?,?,?,?)");
+        //print_r($stmt);
+        //Binding the parameters
+        $stmt->bind_param("sssssss", $user_id,$online_trans_id,$room_id,$game_id,$trans_amt,$order_id,$status);
 
+        //Executing the statment
+        $result = $stmt->execute();
+        // $affRows=mysqli_affected_rows($this->con);///->affectedRows();
+
+        //Closing the statment
+        $stmt->close();
+        //print_r($result);
+        //If statment executed successfully
+        if ($result) {
+
+            return 0;
+        } else {
+            //Returning 1 means failed to save transaction room
+            return 1;
+        }
+    } 
+     //Method will save user transaction details here
+     public function saveTransaction($room_id,$user_id,$online_trans_id,$game_id,$trans_amt){
+        //First we will check whether the student is already registered or not
+        //print_r($check_update);
+       
+            //Crating an statement
+            $stmt = $this->con->prepare("insert into  LOTTY_TICKETS_TRANSACTION (user_id ,online_trans_id,room_id,game_id,trans_amt )values(?,?,?,?,?)");
+            //print_r($stmt);
+            //Binding the parameters
+            $stmt->bind_param("sssss", $user_id,$online_trans_id,$room_id,$game_id,$trans_amt);
+            
+            //Executing the statment
+            $result = $stmt->execute();
+           // $affRows=mysqli_affected_rows($this->con);///->affectedRows();
+            
+            //Closing the statment
+            $stmt->close();
+            //print_r($result);
+            //If statment executed successfully
+            if ($result) {
+
+                return 0;
+            } else {
+                //Returning 1 means failed to save transaction room
+                return 1;
+            }
+        
+        
+    }
     //Method for user  login data
     public function userLogin($userId ,$pass){
         
@@ -213,36 +267,6 @@ class DbOperation
         }else{
             return 2;
         }
-        
-    }
-
-    //Method will save user transaction details here
-    public function saveTransaction($room_id,$user_id,$online_trans_id,$game_id,$trans_amt){
-        //First we will check whether the student is already registered or not
-        //print_r($check_update);
-       
-            //Crating an statement
-            $stmt = $this->con->prepare("insert into  LOTTY_TICKETS_TRANSACTION (user_id ,online_trans_id,room_id,game_id,trans_amt )values(?,?,?,?,?)");
-            //print_r($stmt);
-            //Binding the parameters
-            $stmt->bind_param("sssss", $user_id,$online_trans_id,$room_id,$game_id,$trans_amt);
-            
-            //Executing the statment
-            $result = $stmt->execute();
-           // $affRows=mysqli_affected_rows($this->con);///->affectedRows();
-            
-            //Closing the statment
-            $stmt->close();
-            //print_r($result);
-            //If statment executed successfully
-            if ($result) {
-
-                return 0;
-            } else {
-                //Returning 1 means failed to save transaction room
-                return 1;
-            }
-        
         
     }
 
