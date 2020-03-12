@@ -20,6 +20,141 @@ $configuration = [
 $c = new \Slim\Container($configuration);
 $app = new \Slim\App($c);
 //$app = new \Slim\App;
+//transaction start
+
+ //transaction status
+ $app->get('/transactionStatus', function (Request $req,  Response $res, $args = [])  {
+ 
+    //Creating a response array
+    $response = array();
+    if(!verifyRequiredParams(array('room_id','user_id','online_trans_id','game_id','trans_amt'),$req)){
+        return;
+    }
+    //reading post parameters
+    $room_id = $req->getParam('room_id');
+    $user_id = $req->getParam('user_id');
+    $online_trans_id = $req->getParam('online_trans_id');
+    $game_id = $req->getParam('game_id');
+    $trans_amt = $req->getParam('trans_amt');
+    
+    //Creating a DbOperation object
+    $db = new DbOperation();
+    //Calling the method createStudent to add student to the database
+    $res = $db->transactionStatus($user_id,$room_id,$online_trans_id,$game_id,$trans_amt);
+   // echoResponse(201, $res);
+    //If the result returned is 0 means success
+    if ($res == 0) {
+        //Making the response error false
+        $response["error"] = false;
+        //Adding a success message
+        $response["message"] = "Transaction initiated successfully";
+        $response["status"] = $res;
+
+        //Displaying response
+        echoResponse(201, $response);
+    //If the result returned is 1 means failure
+    }else if ($res == -1) {
+        //Making the response error false
+        $response["error"] = true;
+        //Adding a success message
+        $response["message"] = "No Rows found";
+        //Displaying response
+        echoResponse(201, $response);
+    //If the result returned is 1 means failure
+    } else if ($res == 1) {
+        $response["error"] = true;
+        $response["message"] = "There is some error";
+        echoResponse(200, $response);
+    //If the result returned is 2 means user already exist
+    } else if ($res == 2) {
+        $response["error"] = true;
+        $response["message"] = "Sorry,  There is some error";
+        echoResponse(200, $response);
+    }
+});
+//transaction status end
+
+//initiate transaction 
+$app->get('/initiateTransaction', function (Request $req,  Response $res, $args = [])  {
+ 
+    //Creating a response array
+    $response = array();
+    if(!verifyRequiredParams(array('room_id','user_id','online_trans_id','game_id','trans_amt'),$req)){
+        return;
+    }
+    //reading post parameters
+    $room_id = $req->getParam('room_id');
+    $user_id = $req->getParam('user_id');
+    $online_trans_id = $req->getParam('online_trans_id');
+    $game_id = $req->getParam('game_id');
+    $trans_amt = $req->getParam('trans_amt');
+    
+    //Creating a DbOperation object
+    $db = new DbOperation();
+    //Calling the method createStudent to add student to the database
+    $res = $db->initiateTransaction($user_id,$room_id,$online_trans_id,$game_id,$trans_amt);
+    //If the result returned is 0 means success
+    if ($res == 0) {
+        //Making the response error false
+        $response["error"] = false;
+        //Adding a success message
+        $response["message"] = "Transaction initiated successfully";
+        //Displaying response
+        echoResponse(201, $response);
+    //If the result returned is 1 means failure
+    } else if ($res == 1) {
+        $response["error"] = true;
+        $response["message"] = "There is some error";
+        echoResponse(200, $response);
+    //If the result returned is 2 means user already exist
+    } else if ($res == 2) {
+        $response["error"] = true;
+        $response["message"] = "Sorry,  There is some error";
+        echoResponse(200, $response);
+    }
+});
+
+$app->get('/saveTransaction', function (Request $req,  Response $res, $args = [])  {
+ 
+    //Creating a response array
+    $response = array();
+    if(!verifyRequiredParams(array('room_id','user_id','online_trans_id','game_id','trans_amt'),$req)){
+        return;
+    }
+    //reading post parameters
+    $room_id = $req->getParam('room_id');
+    $user_id = $req->getParam('user_id');
+    $online_trans_id = $req->getParam('online_trans_id');
+    $game_id = $req->getParam('game_id');
+    $trans_amt = $req->getParam('trans_amt');
+    
+    //Creating a DbOperation object
+    $db = new DbOperation();
+    //Calling the method createStudent to add student to the database
+    $res = $db->saveTransaction($room_id,$user_id,$online_trans_id,$game_id,$trans_amt);
+    //If the result returned is 0 means success
+    if ($res == 0) {
+        //Making the response error false
+        $response["error"] = false;
+        //Adding a success message
+        $response["message"] = "Transaction added successfully";
+        //Displaying response
+        echoResponse(201, $response);
+    //If the result returned is 1 means failure
+    } else if ($res == 1) {
+        $response["error"] = true;
+        $response["message"] = "There is some error";
+        echoResponse(200, $response);
+    //If the result returned is 2 means user already exist
+    } else if ($res == 2) {
+        $response["error"] = true;
+        $response["message"] = "Sorry,  There is some error";
+        echoResponse(200, $response);
+    }
+});
+
+//transaction end here 
+
 
 //create new user if not created in this function
 $app->get('/addUser', function (Request $req,  Response $res, $args = [])  {
@@ -203,46 +338,6 @@ $app->get('/updateRoom', function (Request $req,  Response $res, $args = [])  {
     }
 });
 
-//update room details
-$app->get('/saveTransaction', function (Request $req,  Response $res, $args = [])  {
- 
-    //Creating a response array
-    $response = array();
-    if(!verifyRequiredParams(array('room_id','user_id','online_trans_id','game_id','trans_amt'),$req)){
-        return;
-    }
-    //reading post parameters
-    $room_id = $req->getParam('room_id');
-    $user_id = $req->getParam('user_id');
-    $online_trans_id = $req->getParam('online_trans_id');
-    $game_id = $req->getParam('game_id');
-    $trans_amt = $req->getParam('trans_amt');
-    
-    //Creating a DbOperation object
-    $db = new DbOperation();
-    //Calling the method createStudent to add student to the database
-    $res = $db->saveTransaction($room_id,$user_id,$online_trans_id,$game_id,$trans_amt);
-    //If the result returned is 0 means success
-    if ($res == 0) {
-        //Making the response error false
-        $response["error"] = false;
-        //Adding a success message
-        $response["message"] = "Transaction added successfully";
-        //Displaying response
-        echoResponse(201, $response);
-    //If the result returned is 1 means failure
-    } else if ($res == 1) {
-        $response["error"] = true;
-        $response["message"] = "There is some error";
-        echoResponse(200, $response);
-    //If the result returned is 2 means user already exist
-    } else if ($res == 2) {
-        $response["error"] = true;
-        $response["message"] = "Sorry,  There is some error";
-        echoResponse(200, $response);
-    }
-});
-//update room details
 $app->get('/startGame', function (Request $req,  Response $res, $args = [])  {
  
     //Creating a response array
